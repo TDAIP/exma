@@ -19,6 +19,11 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('drawing', data);
     });
 
+    // Broadcast color change to all clients
+    socket.on('colorChange', (color) => {
+        socket.broadcast.emit('colorChange', color);
+    });
+
     // Handle disconnection
     socket.on('disconnect', () => {
         console.log('A user disconnected');

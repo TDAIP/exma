@@ -40,6 +40,7 @@
     <div class="toolbar">
         <button id="undo">Undo</button>
         <button id="redo">Redo</button>
+        <input type="color" id="colorPicker" value="#000000" style="margin-left: auto;">
     </div>
     <canvas id="board"></canvas>
     <script src="/socket.io/socket.io.js"></script>
@@ -54,6 +55,7 @@
         let drawing = false;
         let history = [];
         let redoStack = [];
+        let currentColor = '#000000';
 
         const saveState = () => {
             history.push(canvas.toDataURL());
@@ -141,6 +143,16 @@
                 history.push(canvas.toDataURL());
                 restoreState(redoStack.pop());
             }
+        });
+
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            ctx.strokeStyle = currentColor;
+            socket.emit('colorChange', currentColor);
+        });
+
+        socket.on('colorChange', (color) => {
+            ctx.strokeStyle = color;
         });
     </script>
 </body>

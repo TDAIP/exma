@@ -57,6 +57,9 @@
         let redoStack = [];
         let currentColor = '#000000';
 
+        // Initialize strokeStyle to ensure a visible default color
+        ctx.strokeStyle = currentColor;
+
         const saveState = () => {
             history.push(canvas.toDataURL());
             redoStack = []; // Clear redo stack on new action
@@ -71,7 +74,12 @@
             };
         };
 
-        const draw = (x, y) => {
+        // Update the draw function to include beginPath and moveTo for socket events
+        const draw = (x, y, isRemote = false) => {
+            if (isRemote) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
             ctx.lineTo(x, y);
             ctx.stroke();
         };
@@ -127,8 +135,9 @@
         canvas.addEventListener('touchmove', handleTouchMove);
         canvas.addEventListener('touchend', handleTouchEnd);
 
+        // Update socket drawing event to include proper path initialization
         socket.on('drawing', (data) => {
-            draw(data.x, data.y);
+            draw(data.x, data.y, true);
         });
 
         document.getElementById('undo').addEventListener('click', () => {

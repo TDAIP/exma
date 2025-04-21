@@ -10,6 +10,16 @@ const io = new Server(server);
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve the socket.io client library
+app.get('/socket.io/socket.io.js', (req, res) => {
+    res.sendFile(require.resolve('socket.io/client-dist/socket.io.js'));
+});
+
+// Handle missing favicon.ico requests
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
+
 // Handle WebSocket connections
 io.on('connection', (socket) => {
     console.log('A user connected');

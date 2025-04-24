@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ error_code|default('404') }} - Không tìm thấy trang | Roblox Game Uploader</title>
+    
+    <!-- Bootstrap CSS (Replit dark theme) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: var(--bs-body-bg);
+            position: relative;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+        }
+        
+        .error-box {
+            background-color: rgba(25, 29, 35, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                        inset 0 0 32px rgba(71, 118, 230, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .error-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(142, 84, 233, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .error-code-container {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .error-code {
+            font-size: 12rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(120deg, #4776E6, #8E54E9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0;
+            position: relative;
+            animation: pulse 6s ease-in-out infinite;
+        }
+        
+        .error-code::after {
+            content: '{{ error_code|default("404") }}';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            z-index: -1;
+            background: rgba(142, 84, 233, 0.3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(10px);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .space-scene {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: 2rem auto;
+        }
+        
+        .planet {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #4776E6, #8E54E9);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 
+                0 0 50px rgba(142, 84, 233, 0.5),
+                inset -30px -30px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .planet::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 40px;
+            background: linear-gradient(90deg, transparent, rgba(142, 84, 233, 0.6), transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(25deg);
+            border-radius: 50%;
+            filter: blur(5px);
+        }
+        
+        .planet-rings {
+            position: absolute;
+            width: 250px;
+            height: 50px;
+            background: transparent;
+            border-width: 5px 0;
+            border-style: solid;
+            border-color: rgba(142, 84, 233, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(25deg);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(142, 84, 233, 0.3);
+        }
+        
+        .planet-rings::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, 
+                rgba(71, 118, 230, 0.2), 
+                rgba(142, 84, 233, 0.5), 
+                rgba(71, 118, 230, 0.2));
+            transform: rotate(30deg);
+        }
+        
+        .planet-crater {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+        }
+        
+        .crater-1 {
+            width: 30px;
+            height: 30px;
+            top: 30%;
+            left: 30%;
+        }
+        
+        .crater-2 {
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 60%;
+        }
+        
+        .crater-3 {
+            width: 15px;
+            height: 15px;
+            top: 70%;
+            left: 40%;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            width: 2px;
+            height: 2px;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 0.3; transform: scale(1); }
+        }
+        
+        .astronaut {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            right: 15%;
+            animation: float-astronaut 10s ease-in-out infinite;
+        }
+        
+        @keyframes float-astronaut {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        .astronaut-body {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 
+                -5px -5px 15px rgba(0, 0, 0, 0.2) inset,
+                0 0 10px rgba(255, 255, 255, 0.8);
+        }
+        
+        .astronaut-visor {
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 50%;
+            top: 15px;
+            left: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .astronaut-backpack {
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background-color: #ccc;
+            border-radius: 5px;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+        }
+        
+        .astronaut-arm-left {
+            position: absolute;
+            width: 50px;
+            height: 10px;
+            background-color: white;
+            border-radius: 10px;
+            top: 25px;
+            left: -35px;
+            transform: rotate(-20deg);
+        }
+        
+        .astronaut-arm-right {
+            position: absolute;
+            width: 25px;
+            height: 10px;
+            background-color: white;
+            border-radius: 10px;
+            top: 25px;
+            right: -5px;
+            transform: rotate(20deg);
+        }
+        
+        .astronaut-leg-left {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: white;
+            border-radius: 10px;
+            bottom: -15px;
+            left: 15px;
+        }
+        
+        .astronaut-leg-right {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: white;
+            border-radius: 10px;
+            bottom: -15px;
+            right: 15px;
+        }
+        
+        .spaceship {
+            position: absolute;
+            width: 120px;
+            height: 50px;
+            bottom: 10%;
+            left: 10%;
+            animation: spaceship-move 20s linear infinite;
+        }
+        
+        @keyframes spaceship-move {
+            0% { transform: translateX(0) translateY(0) rotate(0); }
+            25% { transform: translateX(50px) translateY(-20px) rotate(5deg); }
+            50% { transform: translateX(100px) translateY(0) rotate(0); }
+            75% { transform: translateX(50px) translateY(20px) rotate(-5deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0); }
+        }
+        
+        .spaceship-body {
+            position: absolute;
+            width: 80px;
+            height: 30px;
+            background: linear-gradient(90deg, #4776E6, #8E54E9);
+            border-radius: 40px 40px 10px 10px;
+            top: 10px;
+            left: 20px;
+            box-shadow: 0 0 20px rgba(142, 84, 233, 0.5);
+        }
+        
+        .spaceship-window {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            top: 10px;
+            left: 30px;
+        }
+        
+        .spaceship-wing-left {
+            position: absolute;
+            width: 40px;
+            height: 15px;
+            background-color: #8E54E9;
+            border-radius: 10px 5px 5px 20px;
+            bottom: 5px;
+            left: 0;
+            transform: rotate(-10deg);
+        }
+        
+        .spaceship-wing-right {
+            position: absolute;
+            width: 40px;
+            height: 15px;
+            background-color: #8E54E9;
+            border-radius: 5px 10px 20px 5px;
+            bottom: 5px;
+            right: 0;
+            transform: rotate(10deg);
+        }
+        
+        .spaceship-thrust {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            background: linear-gradient(90deg, #f39c12, transparent);
+            border-radius: 5px 0 0 5px;
+            bottom: 15px;
+            left: -25px;
+            animation: thrust-pulse 1s infinite;
+        }
+        
+        @keyframes thrust-pulse {
+            0%, 100% { opacity: 0.5; width: 30px; }
+            50% { opacity: 1; width: 40px; }
+        }
+        
+        .meteor {
+            position: absolute;
+            width: 3px;
+            height: 3px; 
+            background: linear-gradient(45deg, #f39c12, transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.7);
+            animation: meteor 5s linear infinite;
+            opacity: 0;
+        }
+        
+        .meteor-1 {
+            top: 20%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+        
+        .meteor-2 {
+            top: 40%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+        
+        .meteor-3 {
+            top: 60%;
+            right: 5%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes meteor {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            
+            100% {
+                transform: translateX(-100vw) translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        .error-details {
+            margin: 2rem 0;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .error-subtitle {
+            color: #e67e22;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .error-message {
+            color: var(--bs-light);
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .error-text {
+            color: var(--bs-light);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+            animation: fadeIn 2s ease-out;
+        }
+        
+        .btn-space {
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-primary.btn-space {
+            background: linear-gradient(120deg, #4776E6, #8E54E9);
+            border: none;
+            box-shadow: 0 5px 15px rgba(71, 118, 230, 0.4);
+        }
+        
+        .btn-outline-light.btn-space {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-space::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+        
+        .btn-space:hover::before {
+            left: 100%;
+        }
+        
+        .btn-space:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(142, 84, 233, 0.5);
+        }
+        
+        .error-card {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: rgba(30, 35, 42, 0.7);
+            border-left: 4px solid #e74c3c;
+            text-align: left;
+            animation: fadeIn 2.5s ease-out;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .error-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #e74c3c;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-card-title i {
+            margin-right: 0.5rem;
+        }
+        
+        .error-card-text {
+            font-size: 0.95rem;
+            color: var(--bs-light);
+            margin-bottom: 0;
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            background: linear-gradient(120deg, rgba(71, 118, 230, 0.1), rgba(142, 84, 233, 0.1));
+            border-radius: 50%;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .shape-1 {
+            width: 150px;
+            height: 150px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 80px;
+            height: 80px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 200px;
+            height: 200px;
+            top: 30%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+        
+        .shape-4 {
+            width: 120px;
+            height: 120px;
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" id="main-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <div class="brand-icon me-2">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <div>
+                    <span class="brand-text">VTriP</span>
+                    <span class="brand-subtitle d-block">Roblox Uploader</span>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about"><i class="fas fa-info-circle me-1"></i>Thông tin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-book me-1"></i>Hướng dẫn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-tools me-1"></i>Công cụ</a>
+                    </li>
+                </ul>
+                <div class="ms-lg-3 mt-2 mt-lg-0 d-flex align-items-center">
+                    <button class="btn btn-sm btn-glow btn-outline-primary" id="theme-toggle">
+                        <i class="fas fa-sun me-1"></i>
+                        <span>Chế độ sáng</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Stars Background -->
+    <div class="stars" id="stars-container"></div>
+    
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Floating shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+            <div class="error-container">
+                <div class="error-box">
+                    <div class="error-code-container">
+                        <h1 class="error-code">{{ error_code|default('404') }}</h1>
+                    </div>
+                    
+                    <div class="space-scene">
+                        <div class="planet">
+                            <div class="planet-crater crater-1"></div>
+                            <div class="planet-crater crater-2"></div>
+                            <div class="planet-crater crater-3"></div>
+                        </div>
+                        <div class="planet-rings"></div>
+                        
+                        <div class="astronaut">
+                            <div class="astronaut-body">
+                                <div class="astronaut-visor"></div>
+                                <div class="astronaut-backpack"></div>
+                                <div class="astronaut-arm-left"></div>
+                                <div class="astronaut-arm-right"></div>
+                                <div class="astronaut-leg-left"></div>
+                                <div class="astronaut-leg-right"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="spaceship">
+                            <div class="spaceship-body"></div>
+                            <div class="spaceship-window"></div>
+                            <div class="spaceship-wing-left"></div>
+                            <div class="spaceship-wing-right"></div>
+                            <div class="spaceship-thrust"></div>
+                        </div>
+                        
+                        <div class="meteor meteor-1"></div>
+                        <div class="meteor meteor-2"></div>
+                        <div class="meteor meteor-3"></div>
+                    </div>
+                    
+                    <div class="error-details">
+                        {% if error_code == 500 %}
+                            <div class="error-subtitle">Lỗi máy chủ</div>
+                            <h2 class="error-message">Ôi không! Đã xảy ra lỗi.</h2>
+                            <p class="error-text">{{ error_message|default('Máy chủ đã gặp lỗi khi xử lý yêu cầu của bạn. Đội ngũ kỹ thuật đã được thông báo và đang khắc phục sự cố. Vui lòng thử lại sau.') }}</p>
+                        {% else %}
+                            <div class="error-subtitle">Trang không tồn tại</div>
+                            <h2 class="error-message">Bạn đã lạc vào vũ trụ số!</h2>
+                            <p class="error-text">Có vẻ như bạn đã đi đến một vùng không gian chưa được khám phá. Chúng tôi không thể tìm thấy trang bạn đang tìm kiếm. Hãy quay lại con đường an toàn!</p>
+                        {% endif %}
+                        
+                        <div class="action-buttons">
+                            <a href="/" class="btn btn-primary btn-space">
+                                <i class="fas fa-rocket me-2"></i>Quay về Trang chủ
+                            </a>
+                            <a href="/about" class="btn btn-outline-light btn-space">
+                                <i class="fas fa-info-circle me-2"></i>Xem thông tin
+                            </a>
+                        </div>
+                    </div>
+                    
+                    {% if error_code == 500 %}
+                        <div class="error-card">
+                            <div class="error-card-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Thông tin lỗi
+                            </div>
+                            <p class="error-card-text">Lỗi này đã được tự động ghi lại để khắc phục. Nếu vấn đề vẫn tiếp diễn, vui lòng liên hệ với nhóm hỗ trợ.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Particles.js for background animation -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create stars
+            createStars();
+            
+            // Initialize particles
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS("particles", {
+                    "particles": {
+                        "number": {
+                            "value": 50,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": ["#4776E6", "#8E54E9", "#3498db"]
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.5,
+                            "random": true
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#4776E6",
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 1.5,
+                            "direction": "none",
+                            "random": true,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "repulse"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+            
+            // Handle theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const htmlElement = document.documentElement;
+                    if (htmlElement.getAttribute('data-bs-theme') === 'dark') {
+                        htmlElement.setAttribute('data-bs-theme', 'light');
+                        themeToggle.innerHTML = '<i class="fas fa-moon me-1"></i><span>Chế độ tối</span>';
+                    } else {
+                        htmlElement.setAttribute('data-bs-theme', 'dark');
+                        themeToggle.innerHTML = '<i class="fas fa-sun me-1"></i><span>Chế độ sáng</span>';
+                    }
+                });
+            }
+            
+            // Enhance visuals with animations
+            document.querySelectorAll('.error-box').forEach(box => {
+                box.style.opacity = '0';
+                box.style.transform = 'translateY(20px)';
+                box.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                setTimeout(() => {
+                    box.style.opacity = '1';
+                    box.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+        
+        // Create star background
+        function createStars() {
+            const starsContainer = document.getElementById('stars-container');
+            if (!starsContainer) return;
+            
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Random size and opacity
+                const size = Math.random() * 2 + 1;
+                const opacity = Math.random() * 0.8 + 0.2;
+                
+                // Apply styles
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.opacity = opacity;
+                
+                // Animation
+                const blinkDuration = Math.random() * 5 + 2;
+                star.style.animation = `twinkle ${blinkDuration}s infinite`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+    </script>
+</body>
+</html>
